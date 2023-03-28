@@ -1,13 +1,24 @@
-import axios from "axios";
+import axios from 'axios';
 
-const url = 'https://mern-pavel-app.herokuapp.com/posts';
+const API = axios.create({ baseURL: 'http://localhost:5000' });
 
-export const fetchPosts = () => axios.get(url);
+API.interceptors.request.use((req) => {
+  const profile = localStorage.getItem('profile');
+  if (profile) {
+    req.headers.Authorization = `Bearer ${JSON.parse(profile).token}`;
+  }
+  return req;
+});
 
-export const createPost = (data) => axios.post(url, data);
+export const fetchPosts = () => API.get('/posts');
 
-export const updatePost = (id, updatedPost) => axios.patch(`${url}/${id}`, updatedPost);
+export const createPost = (data) => API.post('/posts', data);
 
-export const deletePost = (id) => axios.delete(`${url}/${id}`);
+export const updatePost = (id, updatedPost) => API.patch(`/posts/${id}`, updatedPost);
 
-export const likePost = (id) => axios.patch(`${url}/${id}/likePost`);
+export const deletePost = (id) => API.delete(`/posts/${id}`);
+
+export const likePost = (id) => API.patch(`/posts/${id}/likePost`);
+
+export const signin = (formData) => API.post('users/signin', formData);
+export const signup = (formData) => API.post('users/signup', formData);
