@@ -1,4 +1,5 @@
 import {
+  COMMENT,
   CREATE,
   DELETE,
   END_LOADING,
@@ -29,6 +30,7 @@ export default (state = { isLoading: true, posts: [] }, action) => {
     case CREATE:
       return { ...state, posts: [...state.posts, action.payload] };
     case UPDATE:
+    case COMMENT:
     case LIKE:
       return { ...state, posts: state.posts.map((post) => (post._id === action.payload._id ? action.payload : post)) };
     case DELETE:

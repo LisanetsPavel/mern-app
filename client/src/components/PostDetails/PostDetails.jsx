@@ -6,6 +6,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import useStyles from './styles';
 import { getPost, getPostsBySearch } from '../../actions/posts';
+import CommentSection from './CommentSection';
 
 export default function PostDetails() {
   const classes = useStyles();
@@ -54,40 +55,40 @@ export default function PostDetails() {
           <Divider style={{ margin: '20px 0' }} />
           <Typography variant="body1"><strong>Realtime Chat - coming soon!</strong></Typography>
           <Divider style={{ margin: '20px 0' }} />
-          <Typography variant="body1"><strong>Comments - coming soon!</strong></Typography>
+          <CommentSection post={post} />
           <Divider style={{ margin: '20px 0' }} />
         </div>
         <div className={classes.imageSection}>
           <img className={classes.media} src={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'} alt={post.title} />
         </div>
       </div>
-      { recommendedPosts.length && (
-      <div className={classes.section}>
-        <Typography gutterBottom variant="h5">
-          You might also like:
-        </Typography>
-        <Divider />
-        <div className={classes.recommendedPosts}>
-          { recommendedPosts.map(({ title, name, likes, selectedFile, message, _id }) => (
-            <div style={{ margin: '20px', cursor: 'pointer' }} onClick={() => openPost(_id)} key={_id}>
-              <Typography variant="h6" gutterBottom>
-                {title}
-              </Typography>
-              <Typography variant="subtitle2" gutterBottom>
-                {name}
-              </Typography>
-              <Typography variant="subtitle2" gutterBottom>
-                {message}
-              </Typography>
-              <Typography variant="subtitle1" gutterBottom>
-                Likes: {likes.length}
-              </Typography>
-              <img src={selectedFile} width="202px" />
-            </div>
-          )) }
+      { recommendedPosts.length ? (
+        <div className={classes.section}>
+          <Typography gutterBottom variant="h5">
+            You might also like:
+          </Typography>
+          <Divider />
+          <div className={classes.recommendedPosts}>
+            { recommendedPosts.map(({ title, name, likes, selectedFile, message, _id }) => (
+              <div style={{ margin: '20px', cursor: 'pointer' }} onClick={() => openPost(_id)} key={_id}>
+                <Typography variant="h6" gutterBottom>
+                  {title}
+                </Typography>
+                <Typography variant="subtitle2" gutterBottom>
+                  {name}
+                </Typography>
+                <Typography variant="subtitle2" gutterBottom>
+                  {message}
+                </Typography>
+                <Typography variant="subtitle1" gutterBottom>
+                  Likes: {likes.length}
+                </Typography>
+                <img src={selectedFile} width="202px" />
+              </div>
+            )) }
+          </div>
         </div>
-      </div>
-      ) }
+      ) : null }
     </Paper>
   );
 }

@@ -6,6 +6,7 @@ import moment from 'moment';
 import { useDispatch } from 'react-redux';
 import { ThumbUpAltOutlined } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
+import { useState } from 'react';
 import useStyles from './styles';
 import { deletePost, likePost } from '../../../actions/posts';
 
@@ -14,24 +15,33 @@ const Post = ({ post, setCurrentId }) => {
   const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem('profile'));
   const history = useHistory();
+  const [likes, setLikes] = useState(post?.likes);
+
+  const userId = user?.result?.googleId || user?.result?._id;
+  const hasLikedPost = post.likes.find((like) => like === userId);
 
   const handleDeletePost = () => {
     dispatch(deletePost(post._id));
   };
 
-  const handleLikePost = () => {
+  const handleLikePost = async () => {
     dispatch(likePost(post._id));
+    if (hasLikedPost) {
+      setLikes(post?.likes.filter((id) => id !== userId));
+    } else {
+      setLikes([...post.likes, userId]);
+    }
   };
 
   const Likes = () => {
-    if (post.likes.length > 0) {
-      return post.likes.find((like) => like === (user?.result?.googleId || user?.result?._id))
+    if (likes.length > 0) {
+      return likes.find((like) => like === userId)
         ? (
           <><ThumbUpAltIcon fontSize="small" />&nbsp;{post.likes.length > 2 ? `You and ${post.likes.length - 1} others`
-            : `${post.likes.length} like${post.likes.length > 1 ? 's' : ''}` }
+            : `${likes.length} like${likes.length > 1 ? 's' : ''}` }
           </>
         ) : (
-          <><ThumbUpAltOutlined fontSize="small" />&nbsp;{post.likes.length} {post.likes.length === 1 ? 'Like' : 'Likes'}</>
+          <><ThumbUpAltOutlined fontSize="small" />&nbsp;{likes.length} {likes.length === 1 ? 'Like' : 'Likes'}</>
         );
     }
 
